@@ -112,7 +112,8 @@ class InstaHours
     request = Net::HTTP::Get.new(uri.request_uri)
     request.basic_auth @options[:api], 'pass'
     response = http.request(request)
-    return JSON.parse(response.body)["time-entries"]
+    entries = JSON.parse(response.body)["time-entries"]
+    entries.each { | e | e["date"] = Date.parse(e["date"]).strftime('%D') }
   end
 
   private

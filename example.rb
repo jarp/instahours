@@ -10,7 +10,7 @@ puts "Total time logged is  #{time} "
 puts "There are #{entries.count} time entries"
 
 entries.each do | entry |
-  puts "#{entry["date"]} | #{entry["project-name"]} >> #{entry["hours"]}h #{entry["minutes"]}m "
+  puts "#{entry["date"]} || #{entry["project-name"]} || #{entry["hours"]}h #{entry["minutes"]}m"
 end
 
-instahours.complete
+#instahours.complete
