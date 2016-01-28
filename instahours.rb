@@ -1,28 +1,3 @@
-# Teamwork::InstaHours
-# allows you to see time entries and total hours for a given week
-# allows you to generate all missing time and apply it to a given default project
-# Requirements:
-# => enable TW api key in your account
-# => set 3 Env variables on your puter: TW_API_KEY, TW_USER_ID, TW_PROJECT_ID
-# => include this class in a script
-
-  # EXAMPLE
-    # require_relative 'instahours'
-    #
-    # instahours = InstaHours.new
-    ##  or instahours = InstaHours.new(Date.new(2016,01,28))
-    # entries = instahours.entries_for
-    # time = instahours.time_for_in_hours
-    #
-    # puts "Total time logged is  #{time} "
-    # puts "There are #{entries.count} time entries"
-    #
-    # entries.each do | entry |
-    #   puts "#{entry["date"]} | #{entry["project-name"]} >> #{entry["hours"]}h #{entry["minutes"]}m "
-    # end
-    #
-    # instahours.complete
-
 require 'net/http'
 require 'openssl'
 require 'json'
@@ -30,7 +5,7 @@ require 'date'
 
 class InstaHours
   def initialize(date=nil, options={})
-    raise "Credentials are missing from ENV variables" if ENV['TW_API_KEY'].empty? || ENV['TW_USER_ID'].empty? || ENV['TW_PROJECT_ID'].empty?
+    raise "Credentials are missing from ENV variables. Must set 'TW_API_KEY', 'TW_USER_ID' and 'TW_PROJECT_ID'" if ENV['TW_API_KEY'].empty? || ENV['TW_USER_ID'].empty? || ENV['TW_PROJECT_ID'].empty?
     @options = {
         api: ENV['TW_API_KEY'],
         company: 'notredame',
@@ -43,15 +18,40 @@ class InstaHours
   end
 
   def complete
+    #start date is actually a day before week starts so add 1
     1.upto(5).each do | d |
       check_date = start_date + d
       add_time = remaining_time(check_date)
+      puts "checking date #{check_date}"
       if remaining_time(check_date) > 0
         puts "adding #{add_time} minutes for date of #{check_date}"
         result = add_time(add_time, check_date)
       end
     end
   end
+
+  def default_project
+    uri = URI("#{@tw_uri}/projects/#{@options[:project_id]}.json")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE # You should use VERIFY_PEER in production
+    request = Net::HTTP::Get.new(uri.request_uri)
+    request.basic_auth @options[:api], 'pass'
+    response = http.request(request)
+    return JSON.parse(response.body)["project"]["name"]
+  end
+
+  def default_person
+    uri = URI("#{@tw_uri}/people/#{@options[:user_id]}.json")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE # You should use VERIFY_PEER in production
+    request = Net::HTTP::Get.new(uri.request_uri)
+    request.basic_auth @options[:api], 'pass'
+    response = http.request(request)
+    return JSON.parse(response.body)["person"]["first-name"]
+  end
+
 
   def add_time(amount, date)
     entry =
@@ -75,7 +75,7 @@ class InstaHours
     request = Net::HTTP::Post.new(uri.request_uri, initheader = {'Content-Type' =>'application/json'})
     request.basic_auth @options[:api], 'pass'
     request.body = entry.to_json
-    res = http.request(request)
+    response = http.request(request)
   end
 
   def time_for_in_hours(day=nil)
@@ -111,13 +111,14 @@ class InstaHours
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE # You should use VERIFY_PEER in production
     request = Net::HTTP::Get.new(uri.request_uri)
     request.basic_auth @options[:api], 'pass'
-    res = http.request(request)
-    return JSON.parse(res.body)["time-entries"]
+    response = http.request(request)
+    return JSON.parse(response.body)["time-entries"]
   end
 
   private
 
   def start_date
+    # subtract on cuz TW seems to not include first day when getting aggregate time data
     monday = @date - days_since_monday - 1
   end
 
