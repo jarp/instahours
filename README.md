@@ -1,11 +1,15 @@
 # Teamwork::InstaHours
 
-A Utility to check hours and automatically complete week by submitting missing yours to a default project.
+A Utility to check hours in Teamwork and automatically complete week by submitting your missing hours to a default project.
 Useful for folks like me that work primarily on a single support project
 
 # What it Does
-* allows you to see time entries and total hours for a given week
-* allows you to generate all missing time and apply it to a given default project
+* Allows you to see time entries and total hours for a given week
+* Allows you to generate all missing time and apply it to a given default project. 
+
+For instance: You look up your weekly hours and you see you logged 30 minutes of work on some project on Tuesday and an hour and half to some otherproject on Wednesday. Fire of the complete command and InstaHours will add 8 hours to your default project on days without any entries, 7 1/2 hours on Tuesday and 6 1/2 hours on Wednesday.
+
+You now have all 40 hours accounted for.
 
 # Requirements:
   * enable TW api key in your account
