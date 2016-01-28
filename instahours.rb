@@ -4,6 +4,11 @@ require 'json'
 require 'date'
 
 class InstaHours
+
+  def company
+    @options[:company]
+  end
+  
   def initialize(date=nil, options={})
     raise "Credentials are missing from ENV variables. Must set 'TW_API_KEY', 'TW_USER_ID' and 'TW_PROJECT_ID'" if ENV['TW_API_KEY'].empty? || ENV['TW_USER_ID'].empty? || ENV['TW_PROJECT_ID'].empty?
     @options = {

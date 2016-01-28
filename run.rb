@@ -14,7 +14,7 @@ puts "Hi there #{instahours.default_person}. Your default project seems to be '#
 continue = ask("Is your name and project correct? (y/n)") { |q| }
 
 
-if continue == 'y'
+unless continue == 'n'
 
   puts "\nAwesome!\n\n"
 
@@ -54,13 +54,19 @@ end
 
     puts "\nYou have logged #{instahours.time_for_in_hours} hours so far for the week.\n\n"
 
-    puts "\n\nBye-bye\n\n\n"
-
   else
-    puts "\nAlrighty then. You can always do this later."
+    puts "\nAlrighty then. You can always do this later.\n\n"
   end
+
+  browse = ask("Do you want to go to the Teamwork website now? (y/n)") { | q | }
+
+  if browse == "y"
+    system "/usr/bin/open -a '/Applications/Google Chrome.app' 'https://#{instahours.company}.teamworkpm.net/all_time'"
+  end
+
+  puts "\n\nBye-bye\n\n\n"
 
 
 else
-  puts "\nWell you need to fix for env variables then"
+  puts "\nWell.. you need to fix that then. Set your ENV variables."
 end
