@@ -8,9 +8,11 @@ Useful for folks like me that work primarily on a single support project
 * Allows you to generate all missing time and apply it to a given default project. 
 * Allows you to run an interactive script that confirms your information and asks you what you want to do
 
-For instance: You look up your weekly hours and you see you logged 30 minutes of work on some project on Tuesday and an hour and half to some otherproject on Wednesday. Fire of the complete command and InstaHours will add 8 hours to your default project on days without any entries, 7 1/2 hours on Tuesday and 6 1/2 hours on Wednesday.
+For instance: You look up your weekly hours and you see you logged 30 minutes of work on some project on Tuesday and an hour and half to some other project on Wednesday. Fire of the 'complete' command and InstaHours will add 8 hours to your default project on days without any entries, 7 1/2 hours on Tuesday and 6 1/2 hours on Wednesday.
 
 You now have all 40 hours accounted for.
+
+And if you don't want to have to take the time looking up what hours you have already logged, just use the command line tool. It will let you know the state of things before asking you if you want to complete the week's entries automatically.
 
 # Requirements:
   * enable TW api key in your account
