@@ -5,23 +5,26 @@ require 'date'
 require 'yaml'
 
 class InstaHours
-
-  def load_config
-    YAML.load_file('config.yml')
+  def load_projects
+    begin
+      YAML.load_file('projects.yml')
+    rescue => e
+      puts "can't load yaml project file"
+      return {}
+    end
   end
 
   def initialize(date=nil, options={})
-    load_config
+    load_projects
     raise "Credentials are missing from ENV variables. Must set 'TW_API_KEY', 'TW_USER_ID' and 'TW_PROJECT_ID'" if ENV['TW_API_KEY'].empty? ||  ENV['TW_USER_ID'].empty? || ENV['TW_PROJECT_ID'].empty?
     @options = {
         api: ENV['TW_API_KEY'],
         company: 'notredame',
         user_id: ENV['TW_USER_ID'],
         project_id: ENV['TW_PROJECT_ID']
-      }.merge(load_config).merge(options)
+      }.merge(load_projects).merge(options)
     @tw_uri = "https://#{@options[:company]}.teamworkpm.net"
     @date = date.nil? ? Date.today : date
-    puts "::>> loaded configs with #{@options}"
   end
 
   def complete
@@ -49,7 +52,8 @@ class InstaHours
   end
 
   def favorite_projects
-    @options['projects']
+    return @options['projects'] if @options['projects']
+    return []
   end
 
   def default_person
@@ -64,7 +68,8 @@ class InstaHours
   end
 
 
-  def add_time(amount, date)
+  def add_time(amount, date, project_id=nil)
+    entry_project_id = project_id.nil? ? @options[:project_id] : project_id
     entry =
     {
       "time-entry" => {
@@ -133,6 +138,10 @@ class InstaHours
     end
   end
 
+  def company
+    @options[:company]
+  end
+
   private
 
   def start_date
@@ -164,9 +173,5 @@ class InstaHours
     end
 
     return false
-  end
-
-  def company
-    @options[:company]
   end
 end
