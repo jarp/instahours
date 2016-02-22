@@ -2,24 +2,26 @@ require 'net/http'
 require 'openssl'
 require 'json'
 require 'date'
+require 'yaml'
 
 class InstaHours
 
-  def company
-    @options[:company]
+  def load_config
+    YAML.load_file('config.yml')
   end
-  
+
   def initialize(date=nil, options={})
-    raise "Credentials are missing from ENV variables. Must set 'TW_API_KEY', 'TW_USER_ID' and 'TW_PROJECT_ID'" if ENV['TW_API_KEY'].empty? || ENV['TW_USER_ID'].empty? || ENV['TW_PROJECT_ID'].empty?
+    load_config
+    raise "Credentials are missing from ENV variables. Must set 'TW_API_KEY', 'TW_USER_ID' and 'TW_PROJECT_ID'" if ENV['TW_API_KEY'].empty? ||  ENV['TW_USER_ID'].empty? || ENV['TW_PROJECT_ID'].empty?
     @options = {
         api: ENV['TW_API_KEY'],
         company: 'notredame',
         user_id: ENV['TW_USER_ID'],
         project_id: ENV['TW_PROJECT_ID']
-      }.merge(options)
-
+      }.merge(load_config).merge(options)
     @tw_uri = "https://#{@options[:company]}.teamworkpm.net"
     @date = date.nil? ? Date.today : date
+    puts "::>> loaded configs with #{@options}"
   end
 
   def complete
@@ -44,6 +46,10 @@ class InstaHours
     request.basic_auth @options[:api], 'pass'
     response = http.request(request)
     return JSON.parse(response.body)["project"]["name"]
+  end
+
+  def favorite_projects
+    @options['projects']
   end
 
   def default_person
@@ -114,11 +120,17 @@ class InstaHours
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE # You should use VERIFY_PEER in production
-    request = Net::HTTP::Get.new(uri.request_uri)
-    request.basic_auth @options[:api], 'pass'
-    response = http.request(request)
-    entries = JSON.parse(response.body)["time-entries"]
-    entries.each { | e | e["date"] = Date.parse(e["date"]).strftime('%D') }
+    begin
+      request = Net::HTTP::Get.new(uri.request_uri)
+      request.basic_auth @options[:api], 'pass'
+      response = http.request(request)
+      entries = JSON.parse(response.body)["time-entries"]
+      return [] if entries.nil?
+      entries.each { | e | e["date"] = Date.parse(e["date"]).strftime('%D') }
+
+    rescue => e
+      puts "!!!!!!! Error: #{e}"
+    end
   end
 
   private
@@ -154,4 +166,7 @@ class InstaHours
     return false
   end
 
+  def company
+    @options[:company]
+  end
 end
