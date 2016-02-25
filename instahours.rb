@@ -8,7 +8,7 @@ class InstaHours
   def company
     @options[:company]
   end
-  
+
   def initialize(date=nil, options={})
     raise "Credentials are missing from ENV variables. Must set 'TW_API_KEY', 'TW_USER_ID' and 'TW_PROJECT_ID'" if ENV['TW_API_KEY'].empty? || ENV['TW_USER_ID'].empty? || ENV['TW_PROJECT_ID'].empty?
     @options = {
@@ -107,7 +107,7 @@ class InstaHours
     if day
       uri_time = "/time_entries.json?userId=#{@options[:user_id]}&fromdate=#{formated_date(day)}&todate=#{formated_date(day)}"
     else
-      uri_time = "/time_entries.json?userId=95087&fromdate=#{formated_date(start_date)}&todate=#{formated_date(end_date)}"
+      uri_time = "/time_entries.json?userId=#{@options[:user_id]}&fromdate=#{formated_date(start_date)}&todate=#{formated_date(end_date)}"
     end
 
     uri = URI("#{@tw_uri}#{uri_time}")
