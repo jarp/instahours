@@ -60,7 +60,6 @@ class Runner
         entry = {project_id: @instahours.favorite_projects[entry_array[0]], minutes: (entry_array[1].to_f * 60).round, date: Date.today}
         entry[:date] = Date.parse(entry_array[2]) if entry_array.length == 3
         raise 'You tried to add hours to a non-existent project' unless @instahours.favorite_projects.fetch(entry_array[0], nil)
-        puts "adding hours for #{entry.inspect}"
         @instahours.add_time(entry[:minutes], entry[:date], entry[:project_id])
       rescue => e
         puts "Can't format entry:: #{e}"

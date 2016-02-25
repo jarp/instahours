@@ -69,9 +69,7 @@ class InstaHours
 
 
   def add_time(amount, date, project_id=nil)
-    puts "[debug] adding time for #{project_id}"
     entry_project_id = project_id.nil? ? @options[:project_id] : project_id
-    puts "[debug] still adding time for #{project_id}"
     entry =
     {
       "time-entry" => {
