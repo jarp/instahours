@@ -33,7 +33,7 @@ class InstaHours
       check_date = start_date + d
       add_time = remaining_time(check_date)
       puts "checking date #{check_date}"
-      if remaining_time(check_date) > 0
+      if remaining_time(check_date) > 0 && check_date <= Date.today
         puts "adding #{add_time} minutes for date of #{check_date}"
         result = add_time(add_time, check_date)
       end
@@ -118,7 +118,7 @@ class InstaHours
     if day
       uri_time = "/time_entries.json?userId=#{@options[:user_id]}&fromdate=#{formated_date(day)}&todate=#{formated_date(day)}"
     else
-      uri_time = "/time_entries.json?userId=95087&fromdate=#{formated_date(start_date)}&todate=#{formated_date(end_date)}"
+      uri_time = "/time_entries.json?userId=#{@options[:user_id]}&fromdate=#{formated_date(start_date)}&todate=#{formated_date(end_date)}"
     end
 
     uri = URI("#{@tw_uri}#{uri_time}")
