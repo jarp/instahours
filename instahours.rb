@@ -69,7 +69,9 @@ class InstaHours
 
 
   def add_time(amount, date, project_id=nil)
+    puts "[debug] adding time for #{project_id}"
     entry_project_id = project_id.nil? ? @options[:project_id] : project_id
+    puts "[debug] still adding time for #{project_id}"
     entry =
     {
       "time-entry" => {
@@ -84,7 +86,7 @@ class InstaHours
       }
     }
 
-    uri = URI("#{@tw_uri}/projects/#{@options[:project_id]}/time_entries.json")
+    uri = URI("#{@tw_uri}/projects/#{entry_project_id}/time_entries.json")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
