@@ -5,6 +5,8 @@ Useful for folks like me that work primarily on a single support project
 
 # What it Does
 * Allows you to see time entries and total hours for a given week
+* Allows you to configure a list of favorite projects with a code => id
+* Allows you to add hours to favorite projects with a very simple format
 * Allows you to generate all missing time and apply it to a given default project. 
 * Allows you to run an interactive script that confirms your information and asks you what you want to do
 
@@ -28,12 +30,13 @@ And if you don't want to have to take the time looking up what hours you have al
   * complete: will check hours for each day of the week and add add missing time to default project
 
 # RUNNER
-
 You can simply run the script and it will:
 * Confirm your identity and your default project
 * Allow you to choose a different week to work with
 * Give you a look at the current entries already logged
 * Ask you if you want to complete the weeks entries by submitting any missing time to your default project
+* Can show you a list of favorite projects and allow you to add hours to them
+* Open up Teamwork website
 
 # EXAMPLE
     require_relative 'instahours'

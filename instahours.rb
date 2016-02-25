@@ -2,22 +2,27 @@ require 'net/http'
 require 'openssl'
 require 'json'
 require 'date'
+require 'yaml'
 
 class InstaHours
-
-  def company
-    @options[:company]
+  def load_projects
+    begin
+      YAML.load_file('projects.yml')
+    rescue => e
+      puts "can't load yaml project file"
+      return {}
+    end
   end
 
   def initialize(date=nil, options={})
-    raise "Credentials are missing from ENV variables. Must set 'TW_API_KEY', 'TW_USER_ID' and 'TW_PROJECT_ID'" if ENV['TW_API_KEY'].empty? || ENV['TW_USER_ID'].empty? || ENV['TW_PROJECT_ID'].empty?
+    load_projects
+    raise "Credentials are missing from ENV variables. Must set 'TW_API_KEY', 'TW_USER_ID' and 'TW_PROJECT_ID'" if ENV['TW_API_KEY'].empty? ||  ENV['TW_USER_ID'].empty? || ENV['TW_PROJECT_ID'].empty?
     @options = {
         api: ENV['TW_API_KEY'],
         company: 'notredame',
         user_id: ENV['TW_USER_ID'],
         project_id: ENV['TW_PROJECT_ID']
-      }.merge(options)
-
+      }.merge(load_projects).merge(options)
     @tw_uri = "https://#{@options[:company]}.teamworkpm.net"
     @date = date.nil? ? Date.today : date
   end
@@ -46,6 +51,11 @@ class InstaHours
     return JSON.parse(response.body)["project"]["name"]
   end
 
+  def favorite_projects
+    return @options['projects'] if @options['projects']
+    return []
+  end
+
   def default_person
     uri = URI("#{@tw_uri}/people/#{@options[:user_id]}.json")
     http = Net::HTTP.new(uri.host, uri.port)
@@ -58,7 +68,8 @@ class InstaHours
   end
 
 
-  def add_time(amount, date)
+  def add_time(amount, date, project_id=nil)
+    entry_project_id = project_id.nil? ? @options[:project_id] : project_id
     entry =
     {
       "time-entry" => {
@@ -114,11 +125,21 @@ class InstaHours
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE # You should use VERIFY_PEER in production
-    request = Net::HTTP::Get.new(uri.request_uri)
-    request.basic_auth @options[:api], 'pass'
-    response = http.request(request)
-    entries = JSON.parse(response.body)["time-entries"]
-    entries.each { | e | e["date"] = Date.parse(e["date"]).strftime('%D') }
+    begin
+      request = Net::HTTP::Get.new(uri.request_uri)
+      request.basic_auth @options[:api], 'pass'
+      response = http.request(request)
+      entries = JSON.parse(response.body)["time-entries"]
+      return [] if entries.nil?
+      entries.each { | e | e["date"] = Date.parse(e["date"]).strftime('%D') }
+
+    rescue => e
+      puts "!!!!!!! Error: #{e}"
+    end
+  end
+
+  def company
+    @options[:company]
   end
 
   private
@@ -153,5 +174,4 @@ class InstaHours
 
     return false
   end
-
 end
