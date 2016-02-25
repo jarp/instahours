@@ -33,7 +33,7 @@ class InstaHours
       check_date = start_date + d
       add_time = remaining_time(check_date)
       puts "checking date #{check_date}"
-      if remaining_time(check_date) > 0
+      if remaining_time(check_date) > 0 && check_date <= Date.today
         puts "adding #{add_time} minutes for date of #{check_date}"
         result = add_time(add_time, check_date)
       end
