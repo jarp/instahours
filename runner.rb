@@ -3,7 +3,6 @@ require 'highline/import'
 require 'date'
 
 class Runner
-
   def initialize
     system 'clear'
     @instahours = ::InstaHours.new
@@ -21,10 +20,8 @@ class Runner
     end
   end
 
-
   def set_date
     which_date = ask("What week do you want to work with? Enter any date within the week (yyyy/mm/dd format). Just leave blank if you want to work with the current one.")
-
     unless which_date.empty?
         new_date = Date.parse(which_date)
         @instahours = InstaHours.new(new_date)
@@ -44,28 +41,25 @@ class Runner
       puts ">> #{entry["date"]} | #{entry["project-name"]} | #{entry["hours"]}h #{entry["minutes"]}m"
     end
 
-    puts ">>........" if current_entires.empty?
-
+    puts "........" if current_entires.empty?
     puts "\nYou have logged #{@instahours.time_for_in_hours} hours so far for the week.\n\n"
   end
 
   def add_hours
-
     add_hours = ask("Do you want to add an entry for a project? (y/{enter})")
-
     if add_hours == 'y'
-      puts "Looks like you have  #{@instahours.favorite_projects.count} projects \n"
+      puts "Looks like you have  #{@instahours.favorite_projects.count} projects \n\n"
       @instahours.favorite_projects.each_key do  | project |
         puts ">> #{project}"
       end
 
-      new_entry = ask("Add your entry in the format of 'project|hours|date'. Leave date blank if you wan to use the current date")
+      new_entry = ask("Add your entry in the format of 'project|hours|date'. Leave date blank if you want to use the current date")
 
       begin
         entry_array = new_entry.split('|')
         entry = {project_id: @instahours.favorite_projects[entry_array[0]], minutes: (entry_array[1].to_f * 60).round, date: Date.today}
         entry[:date] = Date.parse(entry_array[2]) if entry_array.length == 3
-        raise 'You tried to add hours to a non-existent project' unless @instahours.favorite_projects[entry_array[0]] 
+        raise 'You tried to add hours to a non-existent project' unless @instahours.favorite_projects.fetch(entry_array[0], nil)
         @instahours.add_time(entry[:minutes], entry[:date], entry[:project_id])
       rescue => e
         puts "Can't format entry:: #{e}"

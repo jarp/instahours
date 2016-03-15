@@ -84,7 +84,7 @@ class InstaHours
       }
     }
 
-    uri = URI("#{@tw_uri}/projects/#{@options[:project_id]}/time_entries.json")
+    uri = URI("#{@tw_uri}/projects/#{entry_project_id}/time_entries.json")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
