@@ -79,7 +79,7 @@ class InstaHours
         "time" => "08:00",
         "hours" => "0",
         "minutes" => amount,
-        "isbillable" => "0",
+        "isbillable" => "1",
         "tags" => ""
       }
     }
