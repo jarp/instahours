@@ -45,6 +45,23 @@ class Runner
     puts "\nYou have logged #{@instahours.time_for_in_hours} hours so far for the week.\n\n"
   end
 
+  def get_date_from_array(entry_array)
+    begin
+      return Date.parse(entry_array[2])
+    rescue
+      return Date.today
+    end
+  end
+
+  def get_note_from_array(entry_array)
+    begin
+      Date.parse(entry_array[2]).strftime('%D')
+      return entry_array[3] if entry_array.length == 4
+    rescue
+      return entry_array[2] if entry_array.length == 3
+    end
+  end
+
   def add_hours
     add_hours = ask("Do you want to add an entry for a project? (y/{enter})")
     if add_hours == 'y'
@@ -53,21 +70,23 @@ class Runner
         puts ">> #{project}"
       end
 
-      new_entry = ask("Add your entry in the format of 'project|hours|date'. Leave date blank if you want to use the current date")
-
+      new_entry = ask("Add your entry in the format of 'project|hours|date|note'. Leave date blank if you want to use the current date. The last item can be a note.")
       begin
         entry_array = new_entry.split('|')
-        entry = {project_id: @instahours.favorite_projects[entry_array[0]], minutes: (entry_array[1].to_f * 60).round, date: Date.today}
-        entry[:date] = Date.parse(entry_array[2]) if entry_array.length == 3
+        entry = {
+            project_id: @instahours.favorite_projects[entry_array[0]],
+            minutes: (entry_array[1].to_f * 60).round,
+            date: get_date_from_array(entry_array),
+            note: get_note_from_array(entry_array)
+          }
+
         raise 'You tried to add hours to a non-existent project' unless @instahours.favorite_projects.fetch(entry_array[0], nil)
-        @instahours.add_time(entry[:minutes], entry[:date], entry[:project_id])
+        @instahours.add_time(entry[:minutes], entry[:date], entry[:project_id], entry[:note])
       rescue => e
         puts "Can't format entry:: #{e}"
       end
     end
-
-      return add_hours
-
+    return add_hours
   end
 
   def complete
