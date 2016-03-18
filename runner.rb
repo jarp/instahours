@@ -60,6 +60,7 @@ class Runner
     rescue
       return entry_array[2] if entry_array.length == 3
     end
+    return "" if entry_array.length == 2
   end
 
   def add_hours
