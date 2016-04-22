@@ -21,13 +21,13 @@ class Runner
   end
 
   def set_date
-    which_date = ask("What week do you want to work with? Enter any date within the week (yyyy/mm/dd format). Just leave blank if you want to work with the current one.")
+    which_date = ask("What week do you want to work with? Enter any date within the week ('mm/dd' or 'yyyy/mm/dd' format). Just leave blank if you want to work with the current one.")
     unless which_date.empty?
-        new_date = Date.parse(which_date)
+        new_date = determine_date(which_date)
+        puts "Alright changed week from current week to the week of #{new_date}"
         @instahours = InstaHours.new(new_date)
       begin
       rescue => e
-        puts "Alright changed week from current week to the week of #{which_date}"
         puts "You are an idiot and '#{which_date}' is not a date. So let's just work with the current week then. Get smarter and enter a correct date next time."
         puts "e: #{e}"
       end
@@ -45,23 +45,6 @@ class Runner
     puts "\nYou have logged #{@instahours.time_for_in_hours} hours so far for the week.\n\n"
   end
 
-  def get_date_from_array(entry_array)
-    begin
-      return Date.parse(entry_array[2])
-    rescue
-      return Date.today
-    end
-  end
-
-  def get_note_from_array(entry_array)
-    begin
-      Date.parse(entry_array[2]).strftime('%D')
-      return entry_array[3] if entry_array.length == 4
-    rescue
-      return entry_array[2] if entry_array.length == 3
-    end
-    return ""
-  end
 
   def add_hours
     add_hours = ask("Do you want to add an entry for a project? (y/{enter})")
@@ -72,6 +55,7 @@ class Runner
       end
 
       new_entry = ask("Add your entry in the format of 'project|hours|date|note'. Leave date blank if you want to use the current date. The last item can be a note.")
+
       begin
         entry_array = new_entry.split('|')
         entry = {
@@ -120,4 +104,33 @@ class Runner
 
     puts "\n\nBye-bye\n\n\n"
   end
+
+  private
+
+  def determine_date(date)
+    return Date.parse("#{DateTime.now.year}/#{date}") if date.split('/').count ==2
+    return Date.parse("#{DateTime.now.year}-#{date}") if date.split('-').count ==2
+    return Date.parse(date)
+  end
+
+  def get_date_from_array(entry_array)
+    begin
+      # allow m/d, m-d, or full date
+      return determine_date(entry_array[2])
+    rescue => e
+      puts "Oops. The date was not too legit to quit... So just using today's date'"
+      return Date.today
+    end
+  end
+
+  def get_note_from_array(entry_array)
+    begin
+      Date.parse(entry_array[2]).strftime('%D')
+      return entry_array[3] if entry_array.length == 4
+    rescue
+      return entry_array[2] if entry_array.length == 3
+    end
+    return ""
+  end
+
 end
