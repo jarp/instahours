@@ -1,4 +1,4 @@
-require_relative 'instahours'
+require_relative 'insta_hours'
 require 'highline/import'
 require 'date'
 

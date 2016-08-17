@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require_relative 'hours_runner'
+require_relative 'runners/hours_runner'
 runner = HoursRunner.new
 
 runner.confirm
