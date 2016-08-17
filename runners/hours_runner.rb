@@ -1,4 +1,4 @@
-require_relative 'insta_hours'
+require_relative '../models/insta_hours'
 require 'highline/import'
 require 'date'
 
@@ -118,7 +118,7 @@ class HoursRunner
       # allow m/d, m-d, or full date
       return determine_date(entry_array[2])
     rescue => e
-      puts "Oops. The date was not too legit to quit... So just using today's date'"
+      puts "The date is either not present or not too legit to quit... So just using today's date'"
       return Date.today
     end
   end

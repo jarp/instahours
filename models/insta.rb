@@ -7,7 +7,7 @@ require 'yaml'
 class Insta
   def load_config
     begin
-      YAML.load_file('config.yml')
+      YAML.load_file(   File.join(File.dirname(__FILE__), '../config/config.yml') )
     rescue => e
       puts "can't load yaml config file"
       return {}

@@ -20,18 +20,15 @@ class InstaTime < Insta
     entries = JSON.parse(response.body)["time-entries"]
 
     time = []
-
     entries.sort_by { | e | e["todo-item-name"]}.each do | entry |
       time << time_to_text(entry)
     end
-
-    # puts time.inspect
     return time
   end
 
   def time_to_text(entry)
     text = "> #{entry["project-name"]}:#{entry["todo-item-name"]}"
-     text = "#{text}\n> '#{entry["description"]}'" unless entry["description"].empty?
-     text = "#{text}\n>  #{entry["hours"]} hours #{entry["minutes"]} minutes \n\n"
+    text = "#{text}\n> '#{entry["description"]}'" unless entry["description"].empty?
+    text = "#{text}\n>  #{entry["hours"]} hours #{entry["minutes"]} minutes \n\n"
   end
 end

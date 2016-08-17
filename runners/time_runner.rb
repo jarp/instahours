@@ -1,5 +1,5 @@
-require_relative 'insta_time'
-require_relative 'insta_commits'
+require_relative '../models/insta_time'
+require_relative '../models/insta_commits'
 require 'highline/import'
 require 'date'
 
@@ -8,6 +8,7 @@ class TimeRunner
     system 'clear'
     @instatime = ::InstaTime.new
     @instacommits = ::InstaCommits.new
+    @project = @instatime.default_project
   end
 
   def confirm
