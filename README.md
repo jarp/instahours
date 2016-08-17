@@ -7,7 +7,7 @@ Useful for folks like me that work primarily on a single support project
 * Allows you to see time entries and total hours for a given week
 * Allows you to configure a list of favorite projects with a code => id
 * Allows you to add hours to favorite projects with a very simple format
-* Allows you to generate all missing time and apply it to a given default project. 
+* Allows you to generate all missing time and apply it to a given default project.
 * Allows you to run an interactive script that confirms your information and asks you what you want to do
 
 For instance: You look up your weekly hours and you see you logged 30 minutes of work on some project on Tuesday and an hour and half to some other project on Wednesday. Fire of the 'complete' command and InstaHours will add 8 hours to your default project on days without any entries, 7 1/2 hours on Tuesday and 6 1/2 hours on Wednesday.
@@ -18,7 +18,7 @@ And if you don't want to have to take the time looking up what hours you have al
 
 # Requirements:
   * enable TW api key in your account
-  * set 3 Env variables on your puter: TW_API_KEY, TW_USER_ID, TW_PROJECT_ID
+  * set Env variables on your puter: TW_API_KEY, TW_USER_ID, TW_PROJECT_ID, GITHUB_PWD (if using InstaTime)
   * include this class in a script
   * highline gem for interactive script
 
@@ -40,17 +40,17 @@ You can simply run the script and it will:
 
 # EXAMPLE
     require_relative 'instahours'
-    
+
     instahours = InstaHours.new
     #  or instahours = InstaHours.new(Date.new(2016,01,28))
     entries = instahours.entries_for
     time = instahours.time_for_in_hours
-    
+
     puts "Total time logged is  #{time} "
     puts "There are #{entries.count} time entries"
-    
+
     entries.each do | entry |
       puts "#{entry["date"]} | #{entry["project-name"]} >> #{entry["hours"]}h #{entry["minutes"]}m "
     end
-    
+
     instahours.complete

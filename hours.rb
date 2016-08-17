@@ -1,11 +1,9 @@
 #!/usr/bin/env ruby
-require_relative 'runner'
-
-runner = Runner.new
+require_relative 'hours_runner'
+runner = HoursRunner.new
 
 runner.confirm
 runner.set_date
-
 
 begin
   begin

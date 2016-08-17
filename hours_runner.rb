@@ -2,7 +2,7 @@ require_relative 'instahours'
 require 'highline/import'
 require 'date'
 
-class Runner
+class HoursRunner
   def initialize
     system 'clear'
     @instahours = ::InstaHours.new

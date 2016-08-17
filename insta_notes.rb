@@ -4,7 +4,7 @@ require 'json'
 require 'date'
 require 'yaml'
 
-class InstaNotes
+class InstaNotes < Insta
 
   def initialize(date=nil, options={})
     raise "Credentials are missing from ENV variables. Must set 'TW_API_KEY', 'TW_USER_ID' and 'TW_PROJECT_ID'" if ENV['TW_API_KEY'].empty? ||  ENV['TW_USER_ID'].empty? || ENV['TW_PROJECT_ID'].empty?
@@ -32,8 +32,8 @@ class InstaNotes
     return notes
   end
 
-  
-  # REMOTE API CALLS  
+
+  # REMOTE API CALLS
     def fetch_lists
     	uri = URI("#{@tw_uri}/projects/#{@options[:project_id]}/tasklists.json")
       http = Net::HTTP.new(uri.host, uri.port)
@@ -69,7 +69,7 @@ class InstaNotes
       return JSON.parse(response.body)["todo-items"]
     end
 
-    def new_list    
+    def new_list
       remaining_tasks = fetch_open_tasks
       new_date = date_from_list + 7
       list =
