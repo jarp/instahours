@@ -1,19 +1,18 @@
+require_relative 'insta_runner'
 require_relative '../models/insta_time'
 require_relative '../models/insta_commits'
-require 'highline/import'
-require 'date'
 
-class TimeRunner
+class TimeRunner < InstaRunner
   def initialize
-    system 'clear'
-    @instatime = ::InstaTime.new
+    @insta = ::InstaTime.new
     @instacommits = ::InstaCommits.new
-    @project = @instatime.default_project
+    @project = @insta.default_project
+    super
   end
 
   def confirm
-    puts "TeamWork @instatime\n=========================================\n\n"
-    puts "Hi there #{@instatime.default_person}. Your default project seems to be '#{@project}'."
+    puts "TeamWork @insta\n=========================================\n\n"
+    puts "Hi there #{@insta.default_person}. Your default project seems to be '#{@project}'."
     continue = ask("Is your name and project correct? ({enter}/n)") { |q| }
     unless continue == 'n'
       puts "\nAwesome!\n\n"
@@ -27,7 +26,7 @@ class TimeRunner
     unless which_date.empty?
         new_date = determine_date(which_date)
         puts "Alright changed week from current week to the week of #{new_date}"
-        @instatime = InstaTime.new(new_date)
+        @insta = InstaTime.new(new_date)
         @instacommits = InstaCommits.new(new_date)
       begin
       rescue => e
@@ -38,7 +37,7 @@ class TimeRunner
   end
 
   def list_time
-    time = @instatime.fetch_time
+    time = @insta.fetch_time
     puts "You logged time for the following tasks during the week\n\n"
     time.each do | t |
       puts "#{t}"
@@ -59,7 +58,7 @@ class TimeRunner
     browse = ask("Do you want to go to the Teamwork website now? (y/{enter})") { | q | }
 
     if browse == "y"
-      system "/usr/bin/open -a '/Applications/Google Chrome.app' 'https://#{@instatime.company}.teamworkpm.net/all_time'"
+      system "/usr/bin/open -a '/Applications/Google Chrome.app' 'https://#{@insta.company}.teamworkpm.net/all_time'"
     end
 
     puts "\n\nBye-bye\n\n\n"

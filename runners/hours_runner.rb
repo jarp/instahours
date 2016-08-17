@@ -1,8 +1,7 @@
+require_relative 'insta_runner'
 require_relative '../models/insta_hours'
-require 'highline/import'
-require 'date'
 
-class HoursRunner
+class HoursRunner < InstaRunner
   def initialize
     system 'clear'
     @instahours = ::InstaHours.new
