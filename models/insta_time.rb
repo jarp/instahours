@@ -1,9 +1,4 @@
 require_relative 'insta'
-require 'net/http'
-require 'openssl'
-require 'json'
-require 'date'
-require 'yaml'
 
 class InstaTime < Insta
 

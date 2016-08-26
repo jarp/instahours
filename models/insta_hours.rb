@@ -16,7 +16,7 @@ class InstaHours < Insta
   end
 
   def add_time(amount, date, project_id=nil, note="")
-    entry_project_id = project_id.nil? ? @options[:project_id] : project_id
+    entry_project_id = project_id.nil? ? @options["project_id"] : project_id
     entry =
     {
       "time-entry" => {

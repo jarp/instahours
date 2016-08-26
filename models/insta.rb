@@ -56,7 +56,7 @@ class Insta
   end
 
   def company
-    @options[:company]
+    @options['company']
   end
 
   private

@@ -1,8 +1,4 @@
-require 'net/http'
-require 'openssl'
-require 'json'
-require 'date'
-require 'yaml'
+require_relative 'insta'
 
 class InstaNotes < Insta
 
