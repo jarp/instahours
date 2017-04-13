@@ -33,6 +33,7 @@ class InstaCommits < Insta
     request.basic_auth @options['github_user'], @options['github_password']
     response = http.request(request)
     branch_data = JSON.parse(response.body)
+    puts "branches data: #{branch_data}"
     branches = []
 
     branch_data.each do | b |
